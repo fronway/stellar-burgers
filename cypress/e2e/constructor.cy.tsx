@@ -7,6 +7,11 @@ describe('Страница конструктора', () => {
     cy.wait('@getIngredients');
   });
 
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+  });
+
   it('добавляет ингредиенты в конструктор (булка + начинка)', () => {
     cy.contains('Флюоресцентная булка R2-D3')
       .closest('li')
@@ -20,11 +25,15 @@ describe('Страница конструктора', () => {
         cy.contains('Добавить').click();
       });
 
-    cy.contains('Выберите булки').should('not.exist');
-    cy.contains('Выберите начинку').should('not.exist');
-    cy.contains('Флюоресцентная булка R2-D3 (верх)').should('exist');
-    cy.contains('Флюоресцентная булка R2-D3 (низ)').should('exist');
-    cy.contains('Биокотлета из марсианской Магнолии').should('exist');
+    cy.get('[data-cy="burger-constructor"]').within(() => {
+      cy.contains('Выберите булки').should('not.exist');
+      cy.contains('Выберите начинку').should('not.exist');
+      cy.contains('Флюоресцентная булка R2-D3 (верх)').should('exist');
+      cy.contains('Флюоресцентная булка R2-D3 (низ)').should('exist');
+      cy.get('[data-cy="burger-constructor-ingredients"]').within(() => {
+        cy.contains('Биокотлета из марсианской Магнолии').should('exist');
+      });
+    });
   });
 
   it('открывает и закрывает модальное окно ингредиента (крестик и оверлей)', () => {
